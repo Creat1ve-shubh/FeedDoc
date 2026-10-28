@@ -92,7 +92,7 @@ Add a function with the signature `func(*catalog.Store, *catalog.Product) []Issu
 
 ## CI and images
 
-`.github/workflows/ci.yml` runs gofmt, `go vet` and every test against Postgres and Redis service containers on each push and pull request. On `main` it then builds the `Dockerfile` and pushes the image to Docker Hub as `:latest` and `:sha-<commit>`. That step needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` and the variable `DOCKERHUB_REPO`; until the variable is set it is skipped.
+`.github/workflows/ci.yml` runs gofmt, `go vet` and every test against Postgres and Redis service containers on each push and pull request. On `main` it then builds the `Dockerfile` and pushes the image to Docker Hub as `:latest` and `:sha-<commit>`. That step needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`; `DOCKERHUB_REPO` (variable or secret) picks the image name and defaults to `<username>/feeddoctor`. Without the secrets the push is skipped.
 
 The image runs `feeddoctor-server` and is configured entirely by the environment variables in `.env.example`. Without `REDIS_URL` it uses an in-memory queue.
 
