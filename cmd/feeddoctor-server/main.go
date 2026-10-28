@@ -92,7 +92,7 @@ func loadConfig() (config, error) {
 	c := config{
 		apiKey:    os.Getenv("SHOPIFY_API_KEY"),
 		apiSecret: os.Getenv("SHOPIFY_API_SECRET"),
-		scopes:    envOr("SHOPIFY_SCOPES", "read_products"),
+		scopes:    envOr("SHOPIFY_SCOPES", "read_products,read_legal_policies"),
 		// Render sets RENDER_EXTERNAL_URL itself, so APP_URL is only needed
 		// elsewhere or to override it.
 		appURL:      envOr("APP_URL", os.Getenv("RENDER_EXTERNAL_URL")),

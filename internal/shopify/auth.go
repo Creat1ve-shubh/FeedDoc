@@ -23,12 +23,32 @@ import (
 type App struct {
 	APIKey    string
 	APISecret string
-	Scopes    string // comma separated, e.g. "read_products"
+	Scopes    string // comma separated, e.g. "read_products,read_legal_policies"
 	// OAuthBase overrides https://{shop} for the token exchange in tests.
 	OAuthBase string
 }
 
 var shopDomain = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$`)
+
+// MissingScopes lists the app's scopes that granted (Shopify's comma
+// separated scope string) does not cover. A write_ scope covers its read_.
+func (a App) MissingScopes(granted string) []string {
+	have := map[string]bool{}
+	for _, g := range strings.Split(granted, ",") {
+		g = strings.TrimSpace(g)
+		have[g] = true
+		if rest, ok := strings.CutPrefix(g, "write_"); ok {
+			have["read_"+rest] = true
+		}
+	}
+	var missing []string
+	for _, want := range strings.Split(a.Scopes, ",") {
+		if want = strings.TrimSpace(want); want != "" && !have[want] {
+			missing = append(missing, want)
+		}
+	}
+	return missing
+}
 
 // ValidShop reports whether s is a bare myshopify.com domain. Every shop
 // parameter is checked before it goes into a URL, or the OAuth flow becomes

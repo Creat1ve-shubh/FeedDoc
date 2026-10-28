@@ -138,6 +138,9 @@ func (w *Worker) step(ctx context.Context) bool {
 		res, err := w.Scanner.Full(ctx, shop)
 		if err != nil {
 			w.Log.Error("full scan failed", "shop", shop, "err", err)
+			if err := w.Scanner.Store.SetScanError(ctx, shop, err.Error()); err != nil {
+				w.Log.Error("record scan error", "shop", shop, "err", err)
+			}
 			return true
 		}
 		w.Log.Info("full scan", "shop", shop, "result", res)

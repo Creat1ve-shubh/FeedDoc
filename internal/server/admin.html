@@ -60,9 +60,13 @@ async function load() {
     stat(sum.fixedLast7Days, "fixed this week"),
   );
   const list = document.getElementById("issues");
-  if (!sum.lastFullScan) { list.replaceChildren(el("p", "fix", "The first scan is running. Refresh in a minute.")); return; }
-  if (!issues.length) { list.replaceChildren(el("p", null, "No open issues. Every live product is feed-ready.")); return; }
-  list.replaceChildren(...issues.map(is => {
+  const failed = sum.scanError ? [el("p", "sev disapproval", "The last scan failed: " + sum.scanError)] : [];
+  if (!sum.lastFullScan) {
+    list.replaceChildren(...failed, el("p", "fix", failed.length ? "Fix the problem above, then click Rescan catalog." : "The first scan is running. Refresh in a minute."));
+    return;
+  }
+  if (!issues.length) { list.replaceChildren(...failed, el("p", null, "No open issues. Every live product is feed-ready.")); return; }
+  list.replaceChildren(...failed, ...issues.map(is => {
     const d = el("div", "issue");
     const head = el("div");
     head.append(el("span", "sev " + is.severity, is.severity));

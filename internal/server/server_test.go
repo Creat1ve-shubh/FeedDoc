@@ -118,7 +118,7 @@ func TestInstallFlow(t *testing.T) {
 	// A launch from a shop that has not installed goes to /auth.
 	launch := signQuery(url.Values{"shop": {shop}, "timestamp": {"1700000000"}})
 	w := f.do(httptest.NewRequest("GET", "/?"+launch.Encode(), nil))
-	if w.Code != http.StatusFound || w.Header().Get("Location") != "/auth?shop="+shop {
+	if w.Code != http.StatusFound || w.Header().Get("Location") != "https://feeddoctor.example/auth?shop="+shop {
 		t.Fatalf("launch: %d %s", w.Code, w.Header().Get("Location"))
 	}
 
@@ -160,6 +160,24 @@ func TestInstallFlow(t *testing.T) {
 	w = f.do(httptest.NewRequest("GET", "/?"+launch.Encode(), nil))
 	if w.Code != http.StatusOK || !strings.Contains(w.Body.String(), `content="key"`) {
 		t.Fatalf("admin launch: %d", w.Code)
+	}
+}
+
+func TestLaunchAsksForNewScopes(t *testing.T) {
+	f := setup(t)
+	f.st.SaveShop(context.Background(), shop, "shpat_x", "read_products")
+	f.srv.App.Scopes = "read_products,read_legal_policies"
+	f.h = f.srv.Handler()
+
+	q := signQuery(url.Values{"shop": {shop}, "embedded": {"1"}, "timestamp": {"1700000000"}})
+	w := f.do(httptest.NewRequest("GET", "/?"+q.Encode(), nil))
+	if w.Code != http.StatusOK || !strings.Contains(w.Body.String(), `"https://feeddoctor.example/auth?shop=`+shop+`"`) {
+		t.Fatalf("embedded launch with a missing scope: %d %s", w.Code, w.Body)
+	}
+	q = signQuery(url.Values{"shop": {shop}, "timestamp": {"1700000000"}})
+	w = f.do(httptest.NewRequest("GET", "/?"+q.Encode(), nil))
+	if w.Code != http.StatusFound || !strings.HasSuffix(w.Header().Get("Location"), "/auth?shop="+shop) {
+		t.Fatalf("top-level launch with a missing scope: %d %s", w.Code, w.Header().Get("Location"))
 	}
 }
 

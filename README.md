@@ -58,7 +58,7 @@ testdata               Messy and clean stores, and a Shopify bulk export sample
 
 ## How the app works
 
-1. **Install.** `/auth` sends the merchant to Shopify to approve `read_products`. `/auth/callback` checks the HMAC and the state cookie, swaps the code for an offline token, registers the product and uninstall webhooks, and queues a full scan.
+1. **Install.** `/auth` sends the merchant to Shopify to approve `read_products` and `read_legal_policies` (for the refund and shipping policy checks). If the app later needs more scopes, opening it sends the merchant through approval again. `/auth/callback` checks the HMAC and the state cookie, swaps the code for an offline token, registers the product and uninstall webhooks, and queues a full scan.
 2. **Full scan.** The worker reads the store's policies and contact details, runs a GraphQL bulk operation to export every product with its variants and images, runs every rule, and diffs the result against stored issues. Every shop gets a full scan again each 24 hours.
 3. **Webhook rescans.** `products/create`, `update` and `delete` add the product id to a Redis set for the shop. Repeated updates to one product collapse into one entry. The worker refetches up to 250 changed products in one query, reruns the per-product rules, and only touches those products' issues. Catalog-wide rules (duplicate SKUs, store policies) wait for the next full scan.
 4. **History.** An issue is keyed by rule, severity, product, variant and field. A scan marks it new, still open, fixed, or recurring when it was fixed and came back. Issues of deleted or drafted products are removed, not counted as fixed.

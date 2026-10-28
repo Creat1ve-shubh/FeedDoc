@@ -77,17 +77,35 @@ func (s *Server) launch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Open this app from your Shopify admin.", http.StatusBadRequest)
 		return
 	}
-	if _, err := s.Store.Shop(r.Context(), shop); errors.Is(err, store.ErrNotFound) {
-		http.Redirect(w, r, "/auth?shop="+shop, http.StatusFound)
+	sh, err := s.Store.Shop(r.Context(), shop)
+	if errors.Is(err, store.ErrNotFound) {
+		s.toAuth(w, r, shop)
 		return
 	} else if err != nil {
 		s.fail(w, "load shop", err)
+		return
+	}
+	if missing := s.App.MissingScopes(sh.Scope); len(missing) > 0 {
+		s.Log.Info("asking for new scopes", "shop", shop, "missing", strings.Join(missing, ","))
+		s.toAuth(w, r, shop)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// Shopify admin frames the app; allow only that shop and the admin.
 	w.Header().Set("Content-Security-Policy", "frame-ancestors https://"+shop+" https://admin.shopify.com;")
 	writeAdmin(w, s.App.APIKey)
+}
+
+// toAuth starts OAuth. Shopify's approval screen refuses to load inside the
+// admin's iframe, so an embedded launch gets a page that sends the top window.
+func (s *Server) toAuth(w http.ResponseWriter, r *http.Request, shop string) {
+	target := s.AppURL + "/auth?shop=" + shop
+	if r.URL.Query().Get("embedded") != "1" {
+		http.Redirect(w, r, target, http.StatusFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	exitTmpl.Execute(w, struct{ APIKey, Target string }{s.App.APIKey, target})
 }
 
 // ValidLaunch checks a launch or install request signed by Shopify.

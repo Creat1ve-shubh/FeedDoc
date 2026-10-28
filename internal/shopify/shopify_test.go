@@ -172,6 +172,16 @@ func TestValidShop(t *testing.T) {
 	}
 }
 
+func TestMissingScopes(t *testing.T) {
+	app := App{Scopes: "read_products,read_legal_policies"}
+	if got := app.MissingScopes("read_products"); len(got) != 1 || got[0] != "read_legal_policies" {
+		t.Errorf("MissingScopes = %v", got)
+	}
+	if got := app.MissingScopes("write_products,read_legal_policies"); len(got) != 0 {
+		t.Errorf("write_ should cover read_: %v", got)
+	}
+}
+
 func TestVerifyQuery(t *testing.T) {
 	app := App{APISecret: "hush"}
 	q := url.Values{"code": {"abc"}, "shop": {"kavya.myshopify.com"}, "state": {"n1"}, "timestamp": {"1700000000"}}

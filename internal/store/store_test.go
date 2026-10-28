@@ -124,9 +124,20 @@ func TestFullScansTrackNewFixedAndRecurring(t *testing.T) {
 		t.Fatalf("after drafting the mug: %+v", gone)
 	}
 
+	if err := s.SetScanError(ctx, shop, "boom"); err != nil {
+		t.Fatal(err)
+	}
+	if sum, _ := s.Summarize(ctx, shop); sum.ScanError != "boom" {
+		t.Fatalf("scan error not recorded: %+v", sum)
+	}
+	fullScan(t, s, c) // a successful scan clears it
+
 	sum, err := s.Summarize(ctx, shop)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if sum.ScanError != "" {
+		t.Errorf("scan error not cleared: %q", sum.ScanError)
 	}
 	if sum.LiveProducts != 6 || sum.Open["disapproval"] == 0 || sum.HealthScore >= 100 || sum.FixedLast7Days != 0 {
 		t.Errorf("summary: %+v", sum)

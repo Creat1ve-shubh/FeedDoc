@@ -34,7 +34,7 @@ Do these in order. Steps 1 to 4 are one-time setup; steps 5 to 9 are what you re
    - **Allowed redirection URL(s):** `https://<random>.trycloudflare.com/auth/callback`
    - **Embed app in Shopify admin:** on
    - **Use legacy install flow:** on. The server runs the OAuth install itself.
-   - **Scopes:** `read_products`
+   - **Scopes:** `read_products,read_legal_policies`
    - **Compliance webhooks** (customer data request, customer erasure, shop erasure): all three `https://<random>.trycloudflare.com/webhooks`
    - Save, or release the version.
 

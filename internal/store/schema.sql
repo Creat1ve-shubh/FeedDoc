@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS shops (
     last_full_scan timestamptz
 );
 
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS last_scan_error text NOT NULL DEFAULT '';
+
 CREATE TABLE IF NOT EXISTS scans (
     id               bigserial PRIMARY KEY,
     shop             text NOT NULL REFERENCES shops(domain) ON DELETE CASCADE,

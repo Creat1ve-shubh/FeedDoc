@@ -56,6 +56,7 @@ type Shop struct {
 	Info         catalog.Store
 	LiveProducts int
 	LastFullScan *time.Time
+	ScanError    string
 }
 
 // SaveShop records an install or reinstall with its new access token.
@@ -73,9 +74,9 @@ func (s *Store) Shop(ctx context.Context, domain string) (Shop, error) {
 	var sh Shop
 	var info []byte
 	err := s.db.QueryRow(ctx, `
-		SELECT domain, access_token, scope, store_info, live_products, last_full_scan
+		SELECT domain, access_token, scope, store_info, live_products, last_full_scan, last_scan_error
 		FROM shops WHERE domain = $1 AND uninstalled_at IS NULL`, domain).
-		Scan(&sh.Domain, &sh.AccessToken, &sh.Scope, &info, &sh.LiveProducts, &sh.LastFullScan)
+		Scan(&sh.Domain, &sh.AccessToken, &sh.Scope, &info, &sh.LiveProducts, &sh.LastFullScan, &sh.ScanError)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Shop{}, ErrNotFound
 	}
@@ -107,6 +108,13 @@ func (s *Store) ShopsDueForFullScan(ctx context.Context, every time.Duration) ([
 // Shopify sends shop/redact, 48 hours later.
 func (s *Store) Uninstall(ctx context.Context, domain string) error {
 	_, err := s.db.Exec(ctx, `UPDATE shops SET access_token = '', uninstalled_at = now() WHERE domain = $1`, domain)
+	return err
+}
+
+// SetScanError records why the last full scan failed, so the admin can say
+// so instead of waiting forever. A successful full scan clears it.
+func (s *Store) SetScanError(ctx context.Context, domain, msg string) error {
+	_, err := s.db.Exec(ctx, `UPDATE shops SET last_scan_error = $2 WHERE domain = $1`, domain, msg)
 	return err
 }
 
@@ -152,7 +160,8 @@ func (s *Store) ApplyFullScan(ctx context.Context, shop string, fs FullScan) (Re
 			return err
 		}
 		if _, err := tx.Exec(ctx, `
-			UPDATE shops SET store_info = $2, live_products = $3, last_full_scan = $4 WHERE domain = $1`,
+			UPDATE shops SET store_info = $2, live_products = $3, last_full_scan = $4, last_scan_error = ''
+			WHERE domain = $1`,
 			shop, info, len(live), s.now()); err != nil {
 			return err
 		}
@@ -359,6 +368,7 @@ type Summary struct {
 	Recurring      int            `json:"recurring"`
 	FixedLast7Days int            `json:"fixedLast7Days"`
 	LastFullScan   *time.Time     `json:"lastFullScan,omitempty"`
+	ScanError      string         `json:"scanError,omitempty"` // why the last full scan failed
 }
 
 // Summarize computes the dashboard numbers from stored issues.
@@ -371,6 +381,7 @@ func (s *Store) Summarize(ctx context.Context, shop string) (Summary, error) {
 		LiveProducts: sh.LiveProducts,
 		Open:         map[string]int{"disapproval": 0, "warning": 0, "opportunity": 0},
 		LastFullScan: sh.LastFullScan,
+		ScanError:    sh.ScanError,
 	}
 	rows, err := s.db.Query(ctx, `
 		SELECT severity, count(*), count(*) FILTER (WHERE times_reopened > 0)

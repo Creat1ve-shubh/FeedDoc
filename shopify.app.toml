@@ -6,7 +6,7 @@ application_url = "https://your-tunnel.example.com/"
 embedded = true
 
 [access_scopes]
-scopes = "read_products"
+scopes = "read_products,read_legal_policies"
 # The server runs the OAuth install itself (/auth, /auth/callback).
 use_legacy_install_flow = true
 
