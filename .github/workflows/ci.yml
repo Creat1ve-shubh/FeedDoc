@@ -1,4 +1,4 @@
-# Tests every push and pull request. On main, also builds the server image
+# Tests every push and pull request. On main (or a manual run), also builds the server image
 # and pushes it to Docker Hub as :latest and :sha-<commit>.
 #
 # Repository secrets (Settings > Secrets and variables > Actions):
@@ -12,6 +12,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch: # rebuild and push the image by hand from the Actions tab
 
 permissions:
   contents: read
@@ -52,7 +53,7 @@ jobs:
   image:
     needs: test
     # Skipped until the DOCKERHUB_REPO variable is set, so CI stays green before Docker Hub is wired up.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DOCKERHUB_REPO != ''
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DOCKERHUB_REPO != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
