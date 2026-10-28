@@ -13,7 +13,7 @@ import (
 // per-product refetch. The Google fields live in the metafields the Google &
 // YouTube channel writes.
 const productFields = `
-      id handle title descriptionHtml vendor productType status tags onlineStoreUrl
+      id handle title descriptionHtml vendor productType status tags onlineStoreUrl publishedAt
       category { fullName }
       googleCategory: metafield(namespace: "mm-google-shopping", key: "google_product_category") { value }
       condition: metafield(namespace: "mm-google-shopping", key: "condition") { value }
@@ -41,6 +41,7 @@ type gqlProduct struct {
 	Status          string   `json:"status"`
 	Tags            []string `json:"tags"`
 	OnlineStoreURL  *string  `json:"onlineStoreUrl"`
+	PublishedAt     *string  `json:"publishedAt"`
 	Category        *struct {
 		FullName string `json:"fullName"`
 	} `json:"category"`
@@ -105,6 +106,7 @@ func (p gqlProduct) toCatalog() catalog.Product {
 		Status:          p.Status,
 		Tags:            p.Tags,
 		OnlineStoreURL:  deref(p.OnlineStoreURL),
+		PublishedAt:     deref(p.PublishedAt),
 		GoogleCategory:  mf(p.GoogleCategory),
 		Condition:       strings.ToLower(mf(p.Condition)),
 		Gender:          mf(p.Gender),

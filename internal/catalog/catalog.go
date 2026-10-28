@@ -40,21 +40,25 @@ type Policies struct {
 
 // Product is a Shopify product with its variants.
 type Product struct {
-	ID              string    `json:"id"`
-	Handle          string    `json:"handle"`
-	Title           string    `json:"title"`
-	DescriptionHTML string    `json:"descriptionHtml"`
-	Vendor          string    `json:"vendor"`
-	ProductType     string    `json:"productType"`
-	Status          string    `json:"status"` // ACTIVE, DRAFT, ARCHIVED
-	Tags            []string  `json:"tags"`
-	OnlineStoreURL  string    `json:"onlineStoreUrl"`
-	GoogleCategory  string    `json:"googleProductCategory"`
-	Condition       string    `json:"condition"` // new, refurbished, used
-	Gender          string    `json:"gender"`
-	AgeGroup        string    `json:"ageGroup"`
-	Images          []Image   `json:"images"`
-	Variants        []Variant `json:"variants"`
+	ID              string   `json:"id"`
+	Handle          string   `json:"handle"`
+	Title           string   `json:"title"`
+	DescriptionHTML string   `json:"descriptionHtml"`
+	Vendor          string   `json:"vendor"`
+	ProductType     string   `json:"productType"`
+	Status          string   `json:"status"` // ACTIVE, DRAFT, ARCHIVED
+	Tags            []string `json:"tags"`
+	OnlineStoreURL  string   `json:"onlineStoreUrl"`
+	// PublishedAt is when the product was published to the Online Store.
+	// It is set even on password-protected stores, where OnlineStoreURL is
+	// empty because the storefront is not public.
+	PublishedAt    string    `json:"publishedAt"`
+	GoogleCategory string    `json:"googleProductCategory"`
+	Condition      string    `json:"condition"` // new, refurbished, used
+	Gender         string    `json:"gender"`
+	AgeGroup       string    `json:"ageGroup"`
+	Images         []Image   `json:"images"`
+	Variants       []Variant `json:"variants"`
 }
 
 // Image is a product image with its pixel dimensions.

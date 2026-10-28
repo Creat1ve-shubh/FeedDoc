@@ -65,6 +65,9 @@ func TestBulkExportRunsThroughEngine(t *testing.T) {
 	got := map[string]bool{}
 	for _, is := range rules.New().Run(c) {
 		got[is.RuleID+" "+is.ProductID] = true
+		if is.RuleID == "link.unpublished" && is.ProductID == "gid://shopify/Product/2001" {
+			t.Errorf("published product on a password-protected store flagged as unpublished")
+		}
 		if is.ProductID == "gid://shopify/Product/2003" {
 			t.Errorf("draft product was checked: %+v", is)
 		}

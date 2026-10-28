@@ -47,7 +47,9 @@ func All() []Rule {
 // ---- links -----------------------------------------------------------------
 
 func checkLink(_ *catalog.Store, p *catalog.Product) []Issue {
-	if strings.TrimSpace(p.OnlineStoreURL) != "" {
+	// A password-protected store (every dev store, and live stores before
+	// launch) has no public URL, so the publish date is the real signal.
+	if strings.TrimSpace(p.OnlineStoreURL) != "" || strings.TrimSpace(p.PublishedAt) != "" {
 		return nil
 	}
 	return []Issue{{
