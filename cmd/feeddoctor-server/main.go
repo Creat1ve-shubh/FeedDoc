@@ -90,10 +90,12 @@ type config struct {
 
 func loadConfig() (config, error) {
 	c := config{
-		apiKey:      os.Getenv("SHOPIFY_API_KEY"),
-		apiSecret:   os.Getenv("SHOPIFY_API_SECRET"),
-		scopes:      envOr("SHOPIFY_SCOPES", "read_products"),
-		appURL:      os.Getenv("APP_URL"),
+		apiKey:    os.Getenv("SHOPIFY_API_KEY"),
+		apiSecret: os.Getenv("SHOPIFY_API_SECRET"),
+		scopes:    envOr("SHOPIFY_SCOPES", "read_products"),
+		// Render sets RENDER_EXTERNAL_URL itself, so APP_URL is only needed
+		// elsewhere or to override it.
+		appURL:      envOr("APP_URL", os.Getenv("RENDER_EXTERNAL_URL")),
 		databaseURL: os.Getenv("DATABASE_URL"),
 		redisURL:    os.Getenv("REDIS_URL"), // empty: in-memory queue
 		port:        envOr("PORT", "8080"),
