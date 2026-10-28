@@ -69,7 +69,14 @@ jobs:
             exit 0
           fi
           repo="${HUB_REPO:-$HUB_USER/feeddoctor}"
-          echo "name=$(echo "$repo" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          # Accept a pasted Docker Hub link as well as a bare user/name.
+          repo="$(printf '%s' "$repo" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's#^https?://##; s#^(hub\.docker\.com|docker\.io|index\.docker\.io)/##; s#^(r|repository/docker)/##; s#[/:]+(general|tags|builds)?/*$##; s#:.*$##')"
+          case "$repo" in
+            */*) ;;
+            *) repo="$(printf '%s' "$HUB_USER" | tr '[:upper:]' '[:lower:]')/$repo" ;;
+          esac
+          echo "name=$repo" >> "$GITHUB_OUTPUT"
       - if: steps.repo.outputs.skip != 'true'
         uses: actions/checkout@v4
       - if: steps.repo.outputs.skip != 'true'
