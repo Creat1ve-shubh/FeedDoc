@@ -1,0 +1,135 @@
+{
+  "store": {
+    "name": "Kavya Threads",
+    "domain": "kavyathreads.myshopify.com",
+    "currency": "INR",
+    "contactEmail": "",
+    "contactPhone": "",
+    "policies": { "refund": false, "shipping": true, "privacy": true, "terms": false }
+  },
+  "products": [
+    {
+      "id": "gid://shopify/Product/1001",
+      "handle": "cotton-kurta",
+      "title": "FREE SHIPPING!! HANDLOOM COTTON KURTA BEST PRICE",
+      "descriptionHtml": "<p>Soft handloom cotton kurta, block printed by artisans in Jaipur. Breathable for summer.</p>",
+      "vendor": "Kavya Threads",
+      "productType": "Kurta",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "https://kavyathreads.com/products/cotton-kurta",
+      "googleProductCategory": "Apparel & Accessories > Clothing > Shirts & Tops",
+      "images": [{ "url": "https://cdn.shopify.com/kurta-front.jpg", "width": 200, "height": 200 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1001-1", "title": "S", "sku": "KT-KUR-S", "barcode": "", "price": "1299.00", "inventoryTracked": true, "inventoryQuantity": 12, "inventoryPolicy": "DENY", "weight": 0.3, "weightUnit": "KILOGRAMS", "options": { "Size": "S" } },
+        { "id": "gid://shopify/ProductVariant/1001-2", "title": "M", "sku": "KT-KUR-M", "barcode": "", "price": "1299.00", "inventoryTracked": true, "inventoryQuantity": 8, "inventoryPolicy": "DENY", "weight": 0.3, "weightUnit": "KILOGRAMS", "options": { "Size": "M" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1002",
+      "handle": "wireless-earbuds-pro",
+      "title": "Auralis Wireless Earbuds Pro",
+      "descriptionHtml": "<p>Bluetooth 5.3 earbuds with 30-hour battery life, ENC microphones and IPX5 sweat resistance.</p>",
+      "vendor": "Auralis",
+      "productType": "Earbuds",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "https://kavyathreads.com/products/wireless-earbuds-pro",
+      "googleProductCategory": "Electronics > Audio > Headphones",
+      "images": [{ "url": "https://cdn.shopify.com/earbuds.jpg", "width": 1200, "height": 1200 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1002-1", "title": "Black", "sku": "AUR-EB-BLK", "barcode": "8901234567013", "price": "2499.00", "compareAtPrice": "2499.00", "inventoryTracked": true, "inventoryQuantity": 40, "inventoryPolicy": "DENY", "weight": 0.1, "weightUnit": "KILOGRAMS", "options": { "Color": "Black" } },
+        { "id": "gid://shopify/ProductVariant/1002-2", "title": "White", "sku": "AUR-EB-WHT", "barcode": "", "price": "2499.00", "compareAtPrice": "1999.00", "inventoryTracked": true, "inventoryQuantity": 25, "inventoryPolicy": "DENY", "weight": 0.1, "weightUnit": "KILOGRAMS", "options": { "Color": "White" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1003",
+      "handle": "ceramic-coffee-mug",
+      "title": "Blue Pottery Ceramic Coffee Mug",
+      "descriptionHtml": "",
+      "vendor": "Kavya Threads",
+      "productType": "Mug",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "https://kavyathreads.com/products/ceramic-coffee-mug",
+      "googleProductCategory": "",
+      "images": [],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1003-1", "title": "Default Title", "sku": "KT-MUG-01", "barcode": "", "price": "0.00", "inventoryTracked": true, "inventoryQuantity": 30, "inventoryPolicy": "DENY", "weight": 0.35, "weightUnit": "KILOGRAMS", "options": {} }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1004",
+      "handle": "refurbished-laptop-stand",
+      "title": "Refurbished Adjustable Aluminium Laptop Stand for MacBook, Dell, HP, Lenovo, Asus and All Laptops 10 to 17 Inch with Ventilated Design and Anti-Slip Silicone Pads",
+      "descriptionHtml": "<p>Height-adjustable aluminium stand. Folds flat for travel. Inspected and cleaned before dispatch.</p>",
+      "vendor": "Deskwell",
+      "productType": "Laptop Stand",
+      "status": "ACTIVE",
+      "condition": "",
+      "onlineStoreUrl": "https://kavyathreads.com/products/refurbished-laptop-stand",
+      "googleProductCategory": "Electronics > Electronics Accessories > Computer Accessories",
+      "images": [{ "url": "https://cdn.shopify.com/stand.jpg", "width": 900, "height": 900 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1004-1", "title": "Default Title", "sku": "DW-STAND-R", "barcode": "4006381333931", "price": "1199.00", "inventoryTracked": true, "inventoryQuantity": 5, "inventoryPolicy": "DENY", "weight": 0, "weightUnit": "KILOGRAMS", "options": {} }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1005",
+      "handle": "leather-wallet",
+      "title": "Handstitched Leather Wallet",
+      "descriptionHtml": "<p>Vegetable-tanned leather wallet with six card slots and a coin pocket.</p>",
+      "vendor": "Kavya Threads",
+      "productType": "Wallet",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "",
+      "googleProductCategory": "Apparel & Accessories > Handbags, Wallets & Cases > Wallets & Money Clips",
+      "images": [{ "url": "https://cdn.shopify.com/s/files/no-image.png", "width": 600, "height": 600 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1005-1", "title": "Brown", "sku": "KT-ACC-01", "barcode": "", "price": "899.00", "inventoryTracked": true, "inventoryQuantity": 14, "inventoryPolicy": "DENY", "weight": 0.1, "weightUnit": "KILOGRAMS", "options": { "Color": "Brown" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1006",
+      "handle": "canvas-tote",
+      "title": "Printed Canvas Tote Bag",
+      "descriptionHtml": "<p>Tote</p>",
+      "vendor": "",
+      "productType": "Bag",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "https://kavyathreads.com/products/canvas-tote",
+      "googleProductCategory": "Apparel & Accessories > Handbags, Wallets & Cases > Handbags",
+      "images": [{ "url": "https://cdn.shopify.com/tote.jpg", "width": 1000, "height": 1000 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1006-1", "title": "Natural", "sku": "kt-acc-01", "barcode": "", "price": "499.00", "inventoryTracked": true, "inventoryQuantity": 0, "inventoryPolicy": "CONTINUE", "weight": 0.2, "weightUnit": "KILOGRAMS", "options": { "Color": "Natural" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1007",
+      "handle": "steel-bottle",
+      "title": "Insulated Steel Water Bottle 750 ml",
+      "descriptionHtml": "<p>Double-wall vacuum insulated bottle. Keeps drinks cold for 24 hours and hot for 12.</p>",
+      "vendor": "Hydrex",
+      "productType": "Water Bottle",
+      "status": "ACTIVE",
+      "onlineStoreUrl": "https://kavyathreads.com/products/steel-bottle",
+      "googleProductCategory": "Home & Garden > Kitchen & Dining > Food & Beverage Carriers > Water Bottles",
+      "images": [{ "url": "https://cdn.shopify.com/bottle.jpg", "width": 1000, "height": 1000 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1007-1", "title": "Silver", "sku": "HX-750-SLV", "barcode": "8901234567029", "price": "799.00", "inventoryTracked": true, "inventoryQuantity": 50, "inventoryPolicy": "DENY", "weight": 0.4, "weightUnit": "KILOGRAMS", "options": { "Color": "Silver" } },
+        { "id": "gid://shopify/ProductVariant/1007-2", "title": "Black", "sku": "HX-750-BLK", "barcode": "8901234567029", "price": "799.00", "inventoryTracked": true, "inventoryQuantity": 50, "inventoryPolicy": "DENY", "weight": 0.4, "weightUnit": "KILOGRAMS", "options": { "Color": "Black" } },
+        { "id": "gid://shopify/ProductVariant/1007-3", "title": "Teal", "sku": "HX-750-TEL", "barcode": "2001234567893", "price": "799.00", "inventoryTracked": true, "inventoryQuantity": 20, "inventoryPolicy": "DENY", "weight": 0.4, "weightUnit": "KILOGRAMS", "options": { "Color": "Teal" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/1008",
+      "handle": "draft-scarf",
+      "title": "",
+      "descriptionHtml": "",
+      "vendor": "",
+      "productType": "Scarf",
+      "status": "DRAFT",
+      "images": [],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/1008-1", "title": "Default Title", "sku": "", "barcode": "123", "price": "", "options": {} }
+      ]
+    }
+  ]
+}

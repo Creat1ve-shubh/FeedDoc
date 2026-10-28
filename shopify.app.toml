@@ -1,0 +1,22 @@
+# Shopify app configuration. Fill in client_id and the URLs, then push it with
+# `shopify app deploy` (Shopify CLI) or copy the values into the Partner Dashboard.
+name = "Feed Doctor"
+client_id = ""
+application_url = "https://your-tunnel.example.com/"
+embedded = true
+
+[access_scopes]
+scopes = "read_products"
+# The server runs the OAuth install itself (/auth, /auth/callback).
+use_legacy_install_flow = true
+
+[auth]
+redirect_urls = ["https://your-tunnel.example.com/auth/callback"]
+
+[webhooks]
+api_version = "2025-10"
+
+  # Required for every App Store app. The server answers all three.
+  [[webhooks.subscriptions]]
+  compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+  uri = "https://your-tunnel.example.com/webhooks"

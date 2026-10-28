@@ -1,0 +1,8 @@
+Handle,Title,Body (HTML),Vendor,Type,Tags,Published,Option1 Name,Option1 Value,Option2 Name,Option2 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Variant Barcode,Image Src,Image Position,Status
+cotton-kurta,FREE SHIPPING!! HANDLOOM COTTON KURTA BEST PRICE,"<p>Soft handloom cotton kurta, block printed by artisans in Jaipur. Breathable for summer.</p>",FeedDoc Test Store,Kurta,,TRUE,Size,S,,,KT-KUR-S,300,shopify,12,deny,manual,1299.00,,TRUE,TRUE,,https://picsum.photos/id/1062/200/200.jpg,1,active
+cotton-kurta,,,,,,,,M,,,KT-KUR-M,300,shopify,8,deny,manual,1299.00,,TRUE,TRUE,,,,
+wireless-earbuds-pro,Auralis Wireless Earbuds Pro,"<p>Bluetooth 5.3 earbuds with 30-hour battery life, ENC microphones and IPX5 sweat resistance.</p>",Auralis,Earbuds,,TRUE,Color,Black,,,AUR-EB-BLK,100,shopify,40,deny,manual,2499.00,2499.00,TRUE,TRUE,8901234567013,,,active
+ceramic-coffee-mug,Blue Pottery Ceramic Coffee Mug,,FeedDoc Test Store,Mug,,TRUE,,,,,KT-MUG-01,350,shopify,30,deny,manual,0.00,,TRUE,TRUE,,,,active
+refurbished-laptop-stand,Refurbished Aluminium Laptop Stand,"<p>Adjustable aluminium laptop stand, refurbished and tested, with six height settings and a foldable base.</p>",Liftly,Laptop Stand,,TRUE,,,,,KT-MUG-01,0,shopify,0,continue,manual,1899.00,2499.00,TRUE,TRUE,4006381333931,,,active
+leather-wallet,Slim Leather Wallet,<p>Wallet.</p>,,Wallet,,TRUE,,,,,WL-01,80,shopify,15,deny,manual,899.00,,TRUE,TRUE,,,,active
+wool-shawl-draft,Wool Shawl,,FeedDoc Test Store,Shawl,,FALSE,,,,,SH-01,200,shopify,5,deny,manual,1599.00,,TRUE,TRUE,,,,draft

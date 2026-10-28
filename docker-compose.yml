@@ -1,0 +1,16 @@
+# Local Postgres and Redis for development and the integration tests.
+#   docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: feeddoctor
+      POSTGRES_PASSWORD: feeddoctor
+      POSTGRES_DB: feeddoctor
+    ports: ["5433:5432"]   # 5433 on the host so it never clashes with a locally installed Postgres
+    volumes: [pgdata:/var/lib/postgresql/data]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+volumes:
+  pgdata:

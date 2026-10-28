@@ -1,0 +1,48 @@
+{
+  "store": {
+    "name": "Kavya Threads",
+    "domain": "kavyathreads.myshopify.com",
+    "currency": "INR",
+    "contactEmail": "hello@kavyathreads.com",
+    "contactPhone": "+91 98290 00000",
+    "policies": { "refund": true, "shipping": true, "privacy": true, "terms": true }
+  },
+  "products": [
+    {
+      "id": "gid://shopify/Product/2001",
+      "handle": "indigo-kurta",
+      "title": "Kavya Threads Indigo Block Print Cotton Kurta",
+      "descriptionHtml": "<p>Hand block printed indigo kurta in 100% cotton, made by artisans in Bagru, Rajasthan. Straight fit, mandarin collar, side slits. Machine wash cold.</p>",
+      "vendor": "Kavya Threads",
+      "productType": "Kurta",
+      "status": "ACTIVE",
+      "condition": "new",
+      "gender": "female",
+      "ageGroup": "adult",
+      "onlineStoreUrl": "https://kavyathreads.com/products/indigo-kurta",
+      "googleProductCategory": "Apparel & Accessories > Clothing > Shirts & Tops",
+      "images": [{ "url": "https://cdn.shopify.com/indigo-kurta.jpg", "width": 1200, "height": 1600 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/2001-1", "title": "Indigo / S", "sku": "KT-IND-S", "barcode": "", "price": "1499.00", "compareAtPrice": "1899.00", "inventoryTracked": true, "inventoryQuantity": 10, "inventoryPolicy": "DENY", "weight": 0.3, "weightUnit": "KILOGRAMS", "options": { "Color": "Indigo", "Size": "S" } },
+        { "id": "gid://shopify/ProductVariant/2001-2", "title": "Indigo / M", "sku": "KT-IND-M", "barcode": "", "price": "1499.00", "compareAtPrice": "1899.00", "inventoryTracked": true, "inventoryQuantity": 6, "inventoryPolicy": "DENY", "weight": 0.3, "weightUnit": "KILOGRAMS", "options": { "Color": "Indigo", "Size": "M" } }
+      ]
+    },
+    {
+      "id": "gid://shopify/Product/2002",
+      "handle": "steel-bottle-1l",
+      "title": "Hydrex Insulated Steel Water Bottle 1 L",
+      "descriptionHtml": "<p>Double-wall vacuum insulated 18/8 stainless steel bottle. Keeps drinks cold for 24 hours and hot for 12. Leak-proof lid, fits car cup holders.</p>",
+      "vendor": "Hydrex",
+      "productType": "Water Bottle",
+      "status": "ACTIVE",
+      "condition": "new",
+      "onlineStoreUrl": "https://kavyathreads.com/products/steel-bottle-1l",
+      "googleProductCategory": "Home & Garden > Kitchen & Dining > Food & Beverage Carriers > Water Bottles",
+      "images": [{ "url": "https://cdn.shopify.com/bottle-1l.jpg", "width": 1000, "height": 1000 }],
+      "variants": [
+        { "id": "gid://shopify/ProductVariant/2002-1", "title": "Silver", "sku": "HX-1L-SLV", "barcode": "8901234567036", "price": "999.00", "inventoryTracked": true, "inventoryQuantity": 40, "inventoryPolicy": "DENY", "weight": 0.5, "weightUnit": "KILOGRAMS", "options": { "Color": "Silver" } },
+        { "id": "gid://shopify/ProductVariant/2002-2", "title": "Black", "sku": "HX-1L-BLK", "barcode": "8901234567012", "price": "999.00", "inventoryTracked": true, "inventoryQuantity": 40, "inventoryPolicy": "DENY", "weight": 0.5, "weightUnit": "KILOGRAMS", "options": { "Color": "Black" } }
+      ]
+    }
+  ]
+}

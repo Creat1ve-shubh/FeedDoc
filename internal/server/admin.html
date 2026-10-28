@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="shopify-api-key" content="{{.APIKey}}">
+<script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+<title>Feed Doctor</title>
+<style>
+  :root { --bg:#f1f1f1; --card:#fff; --text:#303030; --muted:#616161; --line:#e3e3e3;
+          --bad:#c70a24; --warn:#8a6116; --ok:#0c5132; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--text);
+         font:14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; }
+  .card { background:var(--card); border-radius:12px; padding:16px; margin-bottom:16px;
+          box-shadow: 0 1px 0 rgba(0,0,0,.07); }
+  .stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap:12px; }
+  .stat b { display:block; font-size:24px; }
+  .stat span { color:var(--muted); }
+  h1 { font-size:20px; margin:0 0 12px; }
+  h2 { font-size:15px; margin:0 0 8px; }
+  .row { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+  button { font:inherit; padding:6px 12px; border-radius:8px; border:1px solid var(--line);
+           background:#fff; cursor:pointer; }
+  .issue { border-top:1px solid var(--line); padding:10px 0; }
+  .issue:first-child { border-top:0; }
+  .sev { font-size:12px; font-weight:600; text-transform:uppercase; margin-right:6px; }
+  .disapproval { color:var(--bad); } .warning { color:var(--warn); } .opportunity { color:var(--ok); }
+  .tag { font-size:12px; background:#fff1e3; color:var(--warn); border-radius:6px; padding:1px 6px; margin-left:6px; }
+  .fix { color:var(--muted); }
+  a { color:#005bd3; }
+</style>
+</head>
+<body>
+<main>
+  <div class="row"><h1>Feed health</h1><button id="rescan">Rescan catalog</button></div>
+  <section class="card stats" id="stats"><div class="stat"><span>Loading…</span></div></section>
+  <section class="card"><h2>Open issues</h2><div id="issues"></div></section>
+</main>
+<script>
+const shop = new URLSearchParams(location.search).get("shop") || "";
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const stat = (n, label) => { const d = el("div", "stat"); d.append(el("b", null, n), el("span", null, label)); return d; };
+const numericId = gid => gid.split("/").pop();
+
+async function load() {
+  // App Bridge adds the session token to same-origin fetches.
+  const [sum, issues] = await Promise.all([
+    fetch("/api/summary").then(r => r.json()),
+    fetch("/api/issues?status=open").then(r => r.json()),
+  ]);
+  const stats = document.getElementById("stats");
+  stats.replaceChildren(
+    stat(sum.healthScore + "%", "health score"),
+    stat(sum.productsAtRisk + " / " + sum.liveProducts, "products at risk"),
+    stat(sum.open.disapproval, "disapprovals"),
+    stat(sum.open.warning, "warnings"),
+    stat(sum.recurring, "recurring"),
+    stat(sum.fixedLast7Days, "fixed this week"),
+  );
+  const list = document.getElementById("issues");
+  if (!sum.lastFullScan) { list.replaceChildren(el("p", "fix", "The first scan is running. Refresh in a minute.")); return; }
+  if (!issues.length) { list.replaceChildren(el("p", null, "No open issues. Every live product is feed-ready.")); return; }
+  list.replaceChildren(...issues.map(is => {
+    const d = el("div", "issue");
+    const head = el("div");
+    head.append(el("span", "sev " + is.severity, is.severity));
+    if (is.productId) {
+      const a = el("a", null, is.product || "(untitled)");
+      a.href = "https://" + shop + "/admin/products/" + numericId(is.productId);
+      a.target = "_top";
+      head.append(a);
+    } else head.append(el("strong", null, "Store"));
+    if (is.timesReopened > 0) head.append(el("span", "tag", "came back"));
+    d.append(head, el("div", null, is.message), el("div", "fix", "Fix: " + is.fix));
+    return d;
+  }));
+}
+
+document.getElementById("rescan").onclick = async () => {
+  await fetch("/api/rescan", { method: "POST" });
+  shopify.toast.show("Rescan started");
+};
+load().catch(err => { document.getElementById("issues").textContent = "Could not load issues: " + err; });
+</script>
+</body>
+</html>
