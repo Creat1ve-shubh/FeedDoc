@@ -40,11 +40,25 @@ Exit code is `1` when anything would be disapproved, so the scan can gate a CI j
 
 Draft and archived products are skipped, because they are never sent to Google.
 
+## Free web checker
+
+`web/` is a static page that runs the same rules in the browser, with no Shopify app install. A merchant uploads the product CSV from Shopify's Export button (or types a store address) and gets the report, plus a fixed CSV to import back with "Overwrite products with matching handles". The fixed file holds only the changed products and columns, so images and inventory are left alone.
+
+It fixes what needs no judgment: promotional and all-caps titles, titles over 150 characters, compare-at prices that are not a discount, used or refurbished items sold as new, missing brands (from the store name) and `identifier_exists` for own-brand products. Everything else is reported with a fix to make by hand. Rules the input cannot support, such as store policies in a CSV or barcodes on a store scan, are listed as not checked instead of passing.
+
+```sh
+web/build.sh                              # builds web/feeddoctor.wasm and copies the loader and example CSV
+cd web && python3 -m http.server 8080     # open http://localhost:8080
+```
+
+To deploy on Cloudflare Pages, use `web/build.sh` as the build command and `web` as the output directory. Store-address scans need the worker in `web/proxy` (`cd web/proxy && npx wrangler deploy`), because browsers cannot read another site's `/products.json`. Put its URL in the `feeddoctor-proxy` meta tag in `web/index.html`; while that is empty, the store tab is switched off.
+
 ## Layout
 
 ```
 cmd/feeddoctor         CLI
 cmd/feeddoctor-server  Shopify app: install flow, webhooks, embedded admin, scan worker
+cmd/feeddoctor-wasm    The checker compiled to WebAssembly for web/
 internal/catalog       Store and product types, shaped like Shopify's Admin GraphQL output
 internal/rules         The rules, the GTIN validator and the engine
 internal/report        Health score, counts and text/JSON rendering
@@ -53,6 +67,11 @@ internal/store         Postgres: shops, scans, and issues with their history
 internal/queue         Redis: per-shop sets of changed products, and full-scan requests
 internal/scanner       Full and per-product scans, and the worker that runs them
 internal/server        HTTP routes
+internal/shopifycsv    Shopify product CSV export: parse, and write a fix file for import
+internal/autofix       Fixes that need no judgment, applied to the CSV
+internal/storefront    Catalog from a store's public pages (products.json, policies, contact)
+internal/webscan       What the web checker calls: scan CSV or store, build the fixed file
+web                    The web checker page and the store-fetch worker
 testdata               Messy and clean stores, and a Shopify bulk export sample
 ```
 

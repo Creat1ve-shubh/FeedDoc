@@ -1,0 +1,8 @@
+name = "feeddoctor-proxy"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Set to the checker's origin (for example https://feeddoctor.pages.dev) to
+# stop other sites from using this worker. "*" allows any origin.
+ALLOWED_ORIGIN = "*"

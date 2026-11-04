@@ -291,7 +291,7 @@ func checkGTINMissing(st *catalog.Store, p *catalog.Product) []Issue {
 			missing++
 		}
 	}
-	if missing == 0 || len(p.Variants) == 0 || strings.TrimSpace(p.Vendor) == "" {
+	if missing == 0 || len(p.Variants) == 0 || p.CustomProduct || strings.TrimSpace(p.Vendor) == "" {
 		return nil // with no vendor, brand.missing is the issue to fix first
 	}
 	if ownBrand(st, p) {
