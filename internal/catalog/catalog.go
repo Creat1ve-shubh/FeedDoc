@@ -52,13 +52,16 @@ type Product struct {
 	// PublishedAt is when the product was published to the Online Store.
 	// It is set even on password-protected stores, where OnlineStoreURL is
 	// empty because the storefront is not public.
-	PublishedAt    string    `json:"publishedAt"`
-	GoogleCategory string    `json:"googleProductCategory"`
-	Condition      string    `json:"condition"` // new, refurbished, used
-	Gender         string    `json:"gender"`
-	AgeGroup       string    `json:"ageGroup"`
-	Images         []Image   `json:"images"`
-	Variants       []Variant `json:"variants"`
+	PublishedAt    string `json:"publishedAt"`
+	GoogleCategory string `json:"googleProductCategory"`
+	Condition      string `json:"condition"` // new, refurbished, used
+	Gender         string `json:"gender"`
+	AgeGroup       string `json:"ageGroup"`
+	// CustomProduct is Google's identifier_exists = no: a product with no
+	// GTIN by design, such as the merchant's own brand or handmade goods.
+	CustomProduct bool      `json:"customProduct"`
+	Images        []Image   `json:"images"`
+	Variants      []Variant `json:"variants"`
 }
 
 // Image is a product image with its pixel dimensions.

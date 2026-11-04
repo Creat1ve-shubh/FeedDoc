@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FeedDoctor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Free Google Merchant Center checker for Shopify. Upload your product CSV and see which products Google will disapprove, then download a fixed file. Runs in your browser.">
+<!-- Store address scans call api/scan.mjs, which Vercel serves at /api. Empty turns the store tab off. -->
+<meta name="feeddoctor-proxy" content="/api">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead wrap">
+  <a class="brand" href="./">FeedDoctor</a>
+  <span class="brand-note">Google Merchant Center checker for Shopify</span>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>See which products Google will reject, before it does.</h1>
+    <p class="lede">Upload the product CSV from Shopify and get every Merchant Center problem by product, with a fixed file you can import back. The check runs in your browser, so your catalog never leaves your computer.</p>
+  </section>
+
+  <section class="tool" aria-label="Scan">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-csv" aria-selected="true" aria-controls="panel-csv">Product CSV</button>
+      <button class="tab" role="tab" id="tab-store" aria-selected="false" aria-controls="panel-store">Store address</button>
+    </div>
+
+    <div class="panel" id="panel-csv" role="tabpanel" aria-labelledby="tab-csv">
+      <label class="drop" id="drop" for="csv-file">
+        <input type="file" id="csv-file" accept=".csv,text/csv">
+        <span class="drop-title">Drop your products_export.csv here, or choose a file</span>
+        <span class="drop-hint">In Shopify: Products &rsaquo; Export &rsaquo; All products &rsaquo; CSV for Excel, Numbers or other spreadsheet programs</span>
+      </label>
+      <div class="field">
+        <label for="store-name">Store name <span class="muted">(optional)</span></label>
+        <input id="store-name" type="text" placeholder="As it appears in the Vendor column of your own products" autocomplete="organization">
+        <p class="help">Tells the checker which products are your own brand, so they can skip GTINs, and fills in a brand where one is missing.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-store" role="tabpanel" aria-labelledby="tab-store" hidden>
+      <form id="store-form" class="store-form">
+        <label for="store-url" class="sr">Store address</label>
+        <input id="store-url" type="text" inputmode="url" placeholder="yourstore.com or yourstore.myshopify.com" autocomplete="url">
+        <button type="submit" class="btn primary">Scan store</button>
+      </form>
+      <p class="help" id="store-help">Reads only what your store shows the public: products, policy pages and contact details. Barcodes, inventory and Google Shopping fields are not public, so upload the CSV for those.</p>
+    </div>
+
+    <p class="status" id="status" role="status" aria-live="polite">Loading the checker…</p>
+  </section>
+
+  <section id="results" class="results" hidden>
+    <div class="source-line" id="source-line"></div>
+
+    <div class="summary">
+      <div class="score">
+        <span class="score-num" id="score">–</span>
+        <span class="score-label" id="score-label">of live products would be approved</span>
+      </div>
+      <dl class="counts">
+        <div class="count sev-disapproval"><dt>Disapprovals</dt><dd id="c-disapproval">0</dd></div>
+        <div class="count sev-warning"><dt>Warnings</dt><dd id="c-warning">0</dd></div>
+        <div class="count sev-opportunity"><dt>Opportunities</dt><dd id="c-opportunity">0</dd></div>
+      </dl>
+    </div>
+
+    <div class="layout">
+      <div class="issues-col">
+        <div class="filters" role="group" aria-label="Show">
+          <button class="chip" data-filter="all" aria-pressed="true">All</button>
+          <button class="chip" data-filter="disapproval" aria-pressed="false">Disapprovals</button>
+          <button class="chip" data-filter="warning" aria-pressed="false">Warnings</button>
+          <button class="chip" data-filter="opportunity" aria-pressed="false">Opportunities</button>
+        </div>
+        <div id="issues"></div>
+      </div>
+
+      <aside class="side">
+        <section class="box fix-box" id="fix-box">
+          <h2>Fixed file</h2>
+          <p id="fix-summary"></p>
+          <div class="fix-actions">
+            <button class="btn primary" id="download">Download fixed CSV</button>
+            <button class="btn" id="show-csv" aria-expanded="false">Show CSV</button>
+          </div>
+          <div id="csv-view" hidden>
+            <textarea id="csv-text" readonly rows="8" aria-label="Fixed CSV"></textarea>
+            <button class="btn small" id="copy-csv">Copy</button>
+          </div>
+          <details class="howto">
+            <summary>How to import it</summary>
+            <ol>
+              <li>In Shopify, go to Products and click Import.</li>
+              <li>Choose the downloaded file.</li>
+              <li>Tick <em>Overwrite products with matching handles</em>. Columns not in the file keep their current values.</li>
+              <li>Click Upload and preview, check the changes, then Import products.</li>
+            </ol>
+            <p class="muted">The file holds only the products and columns that changed. It leaves images and inventory alone.</p>
+          </details>
+          <details class="changes">
+            <summary>Every change (<span id="change-count">0</span>)</summary>
+            <div class="table-scroll"><table id="changes"><thead><tr><th>Line</th><th>Column</th><th>Before</th><th>After</th></tr></thead><tbody></tbody></table></div>
+          </details>
+        </section>
+
+        <section class="box" id="unchecked-box">
+          <h2>Not checked</h2>
+          <ul id="unchecked"></ul>
+        </section>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>FeedDoctor checks the product data rules behind most Merchant Center disapprovals. Google makes the final call, and some checks, like landing-page crawls, only happen in Merchant Center.</p>
+</footer>
+
+<script src="wasm_exec.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

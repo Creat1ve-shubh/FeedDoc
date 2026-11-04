@@ -2,3 +2,9 @@
 bin/
 *.exe
 *.zip
+# built by web/build.sh
+web/feeddoctor.wasm
+web/wasm_exec.js
+web/sample.csv
+.tools/
+.vercel/
