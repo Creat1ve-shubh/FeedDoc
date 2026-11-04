@@ -6,8 +6,8 @@
 <title>FeedDoctor</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Free Google Merchant Center checker for Shopify. Upload your product CSV and see which products Google will disapprove, then download a fixed file. Runs in your browser.">
-<!-- Store URL scans go through web/proxy. Set this to the deployed worker URL. Empty turns the store tab off. -->
-<meta name="feeddoctor-proxy" content="">
+<!-- Store address scans call api/scan.mjs, which Vercel serves at /api. Empty turns the store tab off. -->
+<meta name="feeddoctor-proxy" content="/api">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">

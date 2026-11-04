@@ -1,7 +1,7 @@
 // FeedDoctor web checker. The Go rules engine runs as WebAssembly in this
 // page (see cmd/feeddoctor-wasm); this file reads the file, calls it, and
 // renders the report. Nothing is uploaded except a store address, which goes
-// to the proxy in web/proxy.
+// to the store scan function in api/scan.mjs.
 "use strict";
 
 const $ = (id) => document.getElementById(id);
@@ -157,7 +157,12 @@ async function scanStore(address) {
   setStatus(`Reading ${store}…`);
   try {
     const res = await fetch(`${proxy.replace(/\/$/, "")}/scan?store=${encodeURIComponent(store)}`);
-    const body = await res.json();
+    let body;
+    try {
+      body = await res.json();
+    } catch {
+      throw new Error("the store scan service is not running here. Upload the product CSV instead.");
+    }
     if (!res.ok || body.error) throw new Error(body.error || `the store answered ${res.status}`);
     state.source = { kind: "store", input: JSON.stringify(body), name: body.domain, example: false, truncated: body.truncated };
     state.sizes = {};

@@ -51,7 +51,7 @@ web/build.sh                              # builds web/feeddoctor.wasm and copie
 cd web && python3 -m http.server 8080     # open http://localhost:8080
 ```
 
-To deploy on Cloudflare Pages, use `web/build.sh` as the build command and `web` as the output directory. Store-address scans need the worker in `web/proxy` (`cd web/proxy && npx wrangler deploy`), because browsers cannot read another site's `/products.json`. Put its URL in the `feeddoctor-proxy` meta tag in `web/index.html`; while that is empty, the store tab is switched off.
+To deploy on Vercel, import the repository in the Vercel dashboard and keep the defaults: `vercel.json` sets the build command (`web/build.sh`), the output directory (`web`) and the store-scan function. Store-address scans go through `api/scan.mjs`, served at `/api/scan`, because browsers cannot read another site's `/products.json`. Run `npx vercel dev` to try the store tab locally; under a plain static server it says the scan service is not running.
 
 ## Layout
 
@@ -71,7 +71,8 @@ internal/shopifycsv    Shopify product CSV export: parse, and write a fix file f
 internal/autofix       Fixes that need no judgment, applied to the CSV
 internal/storefront    Catalog from a store's public pages (products.json, policies, contact)
 internal/webscan       What the web checker calls: scan CSV or store, build the fixed file
-web                    The web checker page and the store-fetch worker
+web                    The web checker page
+api                    Vercel function that fetches a store's public pages for web/
 testdata               Messy and clean stores, and a Shopify bulk export sample
 ```
 

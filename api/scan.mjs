@@ -1,13 +1,12 @@
-// Cloudflare Worker that fetches a Shopify store's public pages for the web
+// Vercel function that fetches a Shopify store's public pages for the web
 // checker. Browsers cannot read another site's /products.json directly
-// (no CORS headers), so the page asks this worker instead.
+// (no CORS headers), so the page asks this function instead.
 //
-//   GET /scan?store=example.com  ->  storefront.Input JSON (see internal/storefront)
+//   GET /api/scan?store=example.com  ->  storefront.Input JSON (see internal/storefront)
 //
 // It only ever fetches fixed public paths on the host it is given, over
-// https, and refuses IP addresses and local names.
-//
-// Deploy: cd web/proxy && npx wrangler deploy
+// https, and refuses IP addresses and local names. Vercel's CDN caches each
+// store's answer for 10 minutes.
 
 const MAX_PAGES = 10; // 250 products a page, so up to 2,500 products
 const MAX_HTML = 400_000; // characters kept from the home and contact pages
@@ -18,34 +17,16 @@ const POLICIES = {
   terms: "/policies/terms-of-service",
 };
 
-export default {
-  async fetch(request, env, ctx) {
-    const cors = {
-      "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-    };
-    if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-    const url = new URL(request.url);
-    if (url.pathname !== "/scan") return json({ error: "not found" }, 404, cors);
-
-    const host = normalizeHost(url.searchParams.get("store") || "");
-    if (!host) return json({ error: "Enter a store address like yourstore.com or yourstore.myshopify.com." }, 400, cors);
-
-    const cache = caches.default;
-    const cacheKey = new Request(`https://cache.feeddoctor/scan/${host}`);
-    const hit = await cache.match(cacheKey);
-    if (hit) return withHeaders(hit, cors);
-
-    try {
-      const result = await collect(host);
-      const res = json(result, 200, { ...cors, "Cache-Control": "public, max-age=600" });
-      ctx.waitUntil(cache.put(cacheKey, res.clone()));
-      return res;
-    } catch (err) {
-      return json({ error: err.message || String(err) }, 502, cors);
-    }
-  },
-};
+export async function GET(request) {
+  const url = new URL(request.url);
+  const host = normalizeHost(url.searchParams.get("store") || "");
+  if (!host) return json({ error: "Enter a store address like yourstore.com or yourstore.myshopify.com." }, 400);
+  try {
+    return json(await collect(host), 200, { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=60" });
+  } catch (err) {
+    return json({ error: err.message || String(err) }, 502);
+  }
+}
 
 async function collect(host) {
   const base = `https://${host}`;
@@ -117,15 +98,9 @@ async function status(url) {
   return r.status;
 }
 
-function json(body, code, headers) {
+function json(body, code, headers = {}) {
   return new Response(JSON.stringify(body), {
     status: code,
     headers: { "Content-Type": "application/json", ...headers },
   });
-}
-
-function withHeaders(res, headers) {
-  const out = new Response(res.body, res);
-  for (const [k, v] of Object.entries(headers)) out.headers.set(k, v);
-  return out;
 }
