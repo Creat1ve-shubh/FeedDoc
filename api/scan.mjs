@@ -9,7 +9,7 @@
 // store's answer for 10 minutes.
 
 const MAX_PAGES = 10; // 250 products a page, so up to 2,500 products
-const MAX_HTML = 400_000; // characters kept from the home and contact pages
+const MAX_HTML = 400_000; // characters kept from each page, after scripts and styles are stripped
 const POLICIES = {
   refund: "/policies/refund-policy",
   shipping: "/policies/shipping-policy",
@@ -47,12 +47,15 @@ async function collect(host) {
     if (page.products.length < 250) break;
   }
 
-  const [meta, home, contact, ...policyStatus] = await Promise.all([
+  const [meta, home, ...policyStatus] = await Promise.all([
     getJSON(`${base}/meta.json`),
     getText(`${base}/`),
-    getText(`${base}/pages/contact`),
     ...Object.values(POLICIES).map((path) => status(`${base}${path}`)),
   ]);
+  // Themes name the contact page differently (contact, contact-us), so
+  // follow the home page's own link when it has one.
+  const contactPath = contactLink(home) || "/pages/contact";
+  const contact = await getText(`${base}${contactPath}`);
   const policies = {};
   Object.keys(POLICIES).forEach((k, i) => (policies[k] = policyStatus[i] === 200));
 
@@ -90,7 +93,18 @@ async function getJSON(url) {
 async function getText(url) {
   const r = await fetch(url, { headers: UA, redirect: "follow" });
   if (!r.ok) return "";
-  return (await r.text()).slice(0, MAX_HTML);
+  // Scripts and styles fill most of a theme's HTML and would push the
+  // footer, where contact details live, past the cap.
+  const html = (await r.text()).replace(/<script\b[\s\S]*?<\/script>/gi, "").replace(/<style\b[\s\S]*?<\/style>/gi, "");
+  return html.length > MAX_HTML ? html.slice(0, MAX_HTML / 4) + html.slice(-(MAX_HTML * 3) / 4) : html;
+}
+
+// contactLink returns the path of the first same-site link to a contact page.
+function contactLink(html) {
+  for (const m of html.matchAll(/href="(\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?pages\/[^"#?]*contact[^"#?]*)"/gi)) {
+    return m[1];
+  }
+  return "";
 }
 
 async function status(url) {

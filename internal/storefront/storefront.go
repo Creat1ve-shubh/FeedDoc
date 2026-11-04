@@ -186,6 +186,8 @@ var (
 	email   = regexp.MustCompile(`[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}`)
 	tel     = regexp.MustCompile(`(?i)tel:([+0-9][0-9 ()+.-]{5,})`)
 	assetEx = regexp.MustCompile(`(?i)\.(png|jpe?g|gif|webp|svg|js|css)$`)
+
+	contactForm = regexp.MustCompile(`(?i)<form[^>]+action="[^"]*/contact[#"?]|name="form_type"\s+value="contact"`)
 )
 
 // contacts finds a shopper-facing email and phone in the page HTML.
@@ -203,6 +205,11 @@ func contacts(html string) (mail, phone string) {
 	}
 	if m := tel.FindStringSubmatch(html); m != nil {
 		phone = strings.TrimSpace(m[1])
+	}
+	// Shopify's contact form posts to /contact. Google accepts a form as a
+	// way to reach the store, so count it when no address is shown.
+	if mail == "" && contactForm.MatchString(html) {
+		mail = "contact form"
 	}
 	return mail, phone
 }
